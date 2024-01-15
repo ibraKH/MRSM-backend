@@ -7,7 +7,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const secretToken = process.env.TOKEN_SECRET;
-// to auth the token
 const authToken = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;

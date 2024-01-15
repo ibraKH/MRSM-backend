@@ -12,40 +12,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_1 = require("../user");
+const login_1 = require("../login");
+const signup_1 = require("../signup");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const store = new user_1.Users();
+const userLogin = new login_1.LoginModel();
+const userSignUp = new signup_1.SignupModel();
 const secretToken = process.env.TOKEN_SECRET;
-const index = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield store.index();
-    res.json(result);
-});
-const show = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = {
+        email: _req.body.email,
+        password: _req.body.password,
+    };
     try {
-        const userId = parseInt(_req.params.id);
-        const result = yield store.show(userId);
-        if (result == undefined) {
-            return res.json(`No result for any user by the ID = ${userId}`);
-        }
+        const result = yield userLogin.authenticate(user);
         res.json(result);
     }
     catch (err) {
         res.status(400).json(err);
     }
 });
-const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const signup = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = {
-        user_id: _req.body.id,
         username: _req.body.username,
         email: _req.body.email,
         password: _req.body.password,
     };
     try {
-        const result = yield store.create(user);
-        if (result == "Duplicate id")
-            return res.status(400).json(`Duplicated id = ${user.user_id}`);
+        const result = yield userSignUp.create(user);
+        // Duplicates
+        if (result == "Email already exists")
+            return res.status(400).json(`Email already exists`);
+        if (result == "Username already exists")
+            return res.status(400).json(`Username already exists`);
         const token = jsonwebtoken_1.default.sign({ user: result }, secretToken);
         res.json(token);
     }
@@ -54,8 +54,7 @@ const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const user_routes = (app) => {
-    app.get("/users", index);
-    app.get("/user/:id", show);
-    app.post("/new/user", create);
+    app.post("/login", login);
+    app.post("/signup", signup);
 };
 exports.default = user_routes;
