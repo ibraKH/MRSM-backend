@@ -12,7 +12,7 @@ export type LoginUser = {
 };
 
 export class LoginModel {
-  async authenticate(user: LoginUser): Promise<string | null> {
+  async authenticate(user: LoginUser): Promise<LoginUser | string | null> {
     try {
       const conn = await pool.connect();
 
@@ -30,8 +30,13 @@ export class LoginModel {
         return "Please write the correct Email & Password!";
       }
 
+      const returnUser : LoginUser = {
+        email: user.email,
+        password: user.password
+      };
+
       conn.release();
-      return "Login successful";
+      return returnUser;
     } catch (err) {
       throw new Error(`${err}`);
     }

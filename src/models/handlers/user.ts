@@ -19,8 +19,13 @@ const login = async (_req: Request, res: Response) => {
         password: _req.body.password,
     }
     try{
-        const result = await userLogin.authenticate(user);        
-        res.json(result);
+        const result = await userLogin.authenticate(user);     
+
+        const token = jwt.sign({user: result}, secretToken);
+        res.cookie("token", token, {
+            httpOnly: true
+        })
+        res.redirect("/events");
     } catch (err) {
         res.status(400).json(err);
     }
@@ -42,7 +47,10 @@ const signup = async (_req: Request, res: Response) => {
 
         
         const token = jwt.sign({user: result}, secretToken);
-        res.json(token);
+        res.cookie("token", token, {
+            httpOnly: true
+        })
+        res.redirect("/events");
     } catch(err){
         res.status(400).json(err)
     }

@@ -2,8 +2,9 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from 'body-parser';
 import user_routes from './models/handlers/user';
+import event_routes from './models/handlers/event';
 import cors from "cors";
-
+import cookies from "cookie-parser";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3005;
 const corsOptions = {origin: "*"};
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.use(cookies());
 
 // Home Page
 app.get("/", (req: Request, res: Response) => {
@@ -19,6 +21,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 user_routes(app);
+event_routes(app);
 
 // Not Found pages
 app.get('*', (req: Request, res: Response): void => {

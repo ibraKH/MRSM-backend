@@ -27,7 +27,11 @@ const login = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     };
     try {
         const result = yield userLogin.authenticate(user);
-        res.json(result);
+        const token = jsonwebtoken_1.default.sign({ user: result }, secretToken);
+        res.cookie("token", token, {
+            httpOnly: true
+        });
+        res.redirect("/events");
     }
     catch (err) {
         res.status(400).json(err);
@@ -47,7 +51,10 @@ const signup = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (result == "Username already exists")
             return res.status(400).json(`Username already exists`);
         const token = jsonwebtoken_1.default.sign({ user: result }, secretToken);
-        res.json(token);
+        res.cookie("token", token, {
+            httpOnly: true
+        });
+        res.redirect("/events");
     }
     catch (err) {
         res.status(400).json(err);

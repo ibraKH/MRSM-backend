@@ -9,11 +9,14 @@ dotenv_1.default.config();
 const secretToken = process.env.TOKEN_SECRET;
 const authToken = (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
-        const token = authHeader === null || authHeader === void 0 ? void 0 : authHeader.split(" ")[1];
+        // const authHeader = req.headers.authorization;
+        // const token = authHeader?.split(" ")[1];
+        // Changing to cookies
+        const token = req.cookies.token;
         if (token == undefined)
             return res.status(401).json(`Invalid token`);
-        jsonwebtoken_1.default.verify(token, secretToken);
+        const user = jsonwebtoken_1.default.verify(token, secretToken);
+        req.user = user;
         next();
     }
     catch (err) {
