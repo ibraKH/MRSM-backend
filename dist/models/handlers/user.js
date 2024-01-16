@@ -17,6 +17,7 @@ const signup_1 = require("../signup");
 const express_validator_1 = require("express-validator");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const userLogin = new login_1.LoginModel();
 const userSignUp = new signup_1.SignupModel();
@@ -30,7 +31,7 @@ const login = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield userLogin.authenticate(user);
         if (result === "Please write the correct Email & Password")
             return res.status(400).json(`Please write the correct Email & Password`);
-        const token = jsonwebtoken_1.default.sign({ user: result }, secretToken);
+        const token = jsonwebtoken_1.default.sign({ user: result }, secretToken, { expiresIn: 60 });
         res.cookie("token", token, {
             httpOnly: true
         });
@@ -40,6 +41,9 @@ const login = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json(err);
     }
 });
+const loginPage = (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../../public', 'login.html'));
+};
 const signup = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = {
         username: _req.body.username,
@@ -57,7 +61,7 @@ const signup = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).json(`Email already exists`);
         if (result == "Username already exists")
             return res.status(400).json(`Username already exists`);
-        const token = jsonwebtoken_1.default.sign({ user: result }, secretToken);
+        const token = jsonwebtoken_1.default.sign({ user: result }, secretToken, { expiresIn: 60 });
         res.cookie("token", token, {
             httpOnly: true
         });
@@ -67,7 +71,12 @@ const signup = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json(err);
     }
 });
+const signupPage = (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../../public', 'signup.html'));
+};
 const user_routes = (app) => {
+    app.get("/login", loginPage);
+    app.get("/signup", signupPage);
     app.post("/login", login);
     app.post("/signup", [
         (0, express_validator_1.check)("email", "Please provide a valid email! The correct format : info@info.com")

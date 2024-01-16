@@ -4,6 +4,7 @@ import { SignupUser, SignupModel } from "../signup";
 import { check, validationResult } from 'express-validator';
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ const login = async (_req: Request, res: Response) => {
         const result = await userLogin.authenticate(user);     
 
         if(result === "Please write the correct Email & Password") return res.status(400).json(`Please write the correct Email & Password`);
-        const token = jwt.sign({user: result}, secretToken);
+        const token = jwt.sign({user: result}, secretToken, { expiresIn: 60 });
         res.cookie("token", token, {
             httpOnly: true
         })
@@ -32,6 +33,10 @@ const login = async (_req: Request, res: Response) => {
         res.status(400).json(err);
     }
     
+};
+
+const loginPage = (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../../public', 'login.html'));
 };
 
 const signup = async (_req: Request, res: Response) => {
@@ -44,7 +49,7 @@ const signup = async (_req: Request, res: Response) => {
         // Validate the inputs
         const errors = validationResult(_req);
         if(!errors.isEmpty()) return res.status(400).json({errors: errors.array()});
-        
+
         const result = await userSignUp.create(user);
 
         // Duplicates
@@ -52,7 +57,7 @@ const signup = async (_req: Request, res: Response) => {
         if(result == "Username already exists") return res.status(400).json(`Username already exists`);
 
         
-        const token = jwt.sign({user: result}, secretToken);
+        const token = jwt.sign({user: result}, secretToken, { expiresIn: 60 });
         res.cookie("token", token, {
             httpOnly: true
         })
@@ -62,7 +67,13 @@ const signup = async (_req: Request, res: Response) => {
     }
 };
 
+const signupPage = (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../../public', 'signup.html'));
+};
+
 const user_routes = (app: express.Application) => {
+    app.get("/login", loginPage)
+    app.get("/signup", signupPage)
     app.post("/login", login)
     app.post("/signup", [
         check("email", "Please provide a valid email! The correct format : info@info.com")

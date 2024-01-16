@@ -15,11 +15,14 @@ const app = (0, express_1.default)();
 const port = process.env.PORT || 3005;
 const corsOptions = { origin: "*" };
 app.use((0, cors_1.default)(corsOptions));
-app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)());
+// Fake frontend just for testing!
+app.use(express_1.default.static('public'));
+app.use(body_parser_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 // Home Page
 app.get("/", (req, res) => {
-    res.send("MRSM app Backend");
+    res.sendFile(__dirname + "/public/index.html");
 });
 (0, user_1.default)(app);
 (0, event_1.default)(app);
