@@ -27,7 +27,7 @@ export class LoginModel {
       const hashedPassword = result.rows[0].password;
 
       if (!bcrypt.compareSync(user.password + pepper, hashedPassword)) {        
-        return "Please write the correct Email & Password!";
+        return "Please write the correct Email & Password";
       }
 
       const returnUser : LoginUser = {
