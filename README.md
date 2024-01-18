@@ -13,6 +13,7 @@ This project is a web application designed to manage user events. Users can sign
 
 - **Backend:** Node.js, Express.js, TypeScript
 - **Testing:** Jasmine
+- **Authentication:** JWT
 - **Database:** PostgreSQL
 
 ## API Endpoints

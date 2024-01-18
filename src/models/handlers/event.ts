@@ -2,6 +2,7 @@ import express, { Request , Response } from "express";
 import { Event, Events } from "../event";
 import dotenv from "dotenv";
 import authToken from "./auth";
+import path from "path";
 
 dotenv.config();
 
@@ -12,6 +13,10 @@ const index = async (_req: Request, res: Response) => {
     const result = await eventMethods.index(userEmail);
     
     res.json(result);
+};
+
+const createEventPage = (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../../public', '/new/event.html'));
 };
 
 const show = async (_req: Request, res: Response) => {
@@ -33,7 +38,6 @@ const show = async (_req: Request, res: Response) => {
 const create = async (_req: Request, res: Response) => {
     const userEmail = _req.user.user.email;  
     const event : Event = {
-        eventID: _req.body.eventID,
         eventType: _req.body.eventType,
         eventName: _req.body.eventName,
         eventDate: _req.body.eventDate,
@@ -41,7 +45,7 @@ const create = async (_req: Request, res: Response) => {
     }
     try{
         const result = await eventMethods.create(userEmail, event);
-        res.json(result);
+        res.json({status: "Successful!", result: result});
     } catch(err){
         res.status(400).json(err)
     }
@@ -50,6 +54,7 @@ const create = async (_req: Request, res: Response) => {
 const event_routes = (app: express.Application) => {
     app.get("/events", authToken , index)
     app.get("/event/:eventID", authToken , show)
+    app.get("/new/event", authToken, createEventPage)
     app.post("/new/event", authToken, create)
 };
 

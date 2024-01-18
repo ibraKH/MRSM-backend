@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const event_1 = require("../event");
 const dotenv_1 = __importDefault(require("dotenv"));
 const auth_1 = __importDefault(require("./auth"));
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const eventMethods = new event_1.Events();
 const index = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -22,6 +23,9 @@ const index = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield eventMethods.index(userEmail);
     res.json(result);
 });
+const createEventPage = (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../../public', '/new/event.html'));
+};
 const show = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userEmail = _req.user.user.email;
     try {
@@ -39,7 +43,6 @@ const show = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userEmail = _req.user.user.email;
     const event = {
-        eventID: _req.body.eventID,
         eventType: _req.body.eventType,
         eventName: _req.body.eventName,
         eventDate: _req.body.eventDate,
@@ -47,7 +50,7 @@ const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     };
     try {
         const result = yield eventMethods.create(userEmail, event);
-        res.json(result);
+        res.json({ status: "Successful!", result: result });
     }
     catch (err) {
         res.status(400).json(err);
@@ -56,6 +59,7 @@ const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const event_routes = (app) => {
     app.get("/events", auth_1.default, index);
     app.get("/event/:eventID", auth_1.default, show);
+    app.get("/new/event", auth_1.default, createEventPage);
     app.post("/new/event", auth_1.default, create);
 };
 exports.default = event_routes;

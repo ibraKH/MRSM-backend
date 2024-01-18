@@ -24,7 +24,7 @@ const login = async (_req: Request, res: Response) => {
         const result = await userLogin.authenticate(user);     
 
         if(result === "Please write the correct Email & Password") return res.status(400).json(`Please write the correct Email & Password`);
-        const token = jwt.sign({user: result}, secretToken, { expiresIn: 60 });
+        const token = jwt.sign({user: result}, secretToken, { expiresIn: 1800 });
         res.cookie("token", token, {
             httpOnly: true
         })
@@ -57,7 +57,7 @@ const signup = async (_req: Request, res: Response) => {
         if(result == "Username already exists") return res.status(400).json(`Username already exists`);
 
         
-        const token = jwt.sign({user: result}, secretToken, { expiresIn: 60 });
+        const token = jwt.sign({user: result}, secretToken, { expiresIn: 1800 });
         res.cookie("token", token, {
             httpOnly: true
         })

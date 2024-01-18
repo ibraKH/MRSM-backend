@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create new event</title>
+</head>
+<body>
+    <h1>Create new event</h1>
+    <a href="/"><button>Home Page</button></a>
+    <a href="/signup"><button>Sign Up</button></a>
+    <a href="/login"><button>Log In</button></a>
+    <form action="/new/event" method="POST">
+        <label for="eventType">Event Type:</label>
+        <input type="text" id="eventType" name="eventType" required>
+    
+        <label for="eventName">Event Name:</label>
+        <input type="text" id="eventName" name="eventName" required>
+    
+        <label for="eventDate">Event Date:</label>
+        <input type="date" id="eventDate" name="eventDate" required>
+    
+        <label for="eventURL">Event URL:</label>
+        <input type="text" id="eventURL" name="eventURL">
+    
+        <button type="submit">Create Event</button>
+    </form>
+</body>
+</html>
