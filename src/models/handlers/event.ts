@@ -9,8 +9,8 @@ dotenv.config();
 const eventMethods = new Events();
 
 const index = async (_req: Request, res: Response) => {  
-    const userEmail = _req.user.user.email;
-    const result = await eventMethods.index(userEmail);
+    const username = _req.user.user;
+    const result = await eventMethods.index(username);
     
     res.json(result);
 };
@@ -20,10 +20,10 @@ const createEventPage = (req: Request, res: Response) => {
 };
 
 const show = async (_req: Request, res: Response) => {
-    const userEmail = _req.user.user.email;  
+    const username = _req.user.user;  
     try{
         const eventID = parseInt(_req.params.eventID);
-        const result = await eventMethods.show(userEmail, eventID);
+        const result = await eventMethods.show(username, eventID);
         if(result == undefined){
             return res.json(`No result for any event by the ID = ${eventID}`)
         }
@@ -36,7 +36,7 @@ const show = async (_req: Request, res: Response) => {
 };
 
 const create = async (_req: Request, res: Response) => {
-    const userEmail = _req.user.user.email;  
+    const username = _req.user.user;   
     const event : Event = {
         eventType: _req.body.eventType,
         eventName: _req.body.eventName,
@@ -44,7 +44,7 @@ const create = async (_req: Request, res: Response) => {
         eventURL: _req.body.eventURL
     }
     try{
-        const result = await eventMethods.create(userEmail, event);
+        const result = await eventMethods.create(username, event);
         res.json({status: "Successful!", result: result});
     } catch(err){
         res.status(400).json(err)

@@ -12,54 +12,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const event_1 = require("../event");
+const quizzes_1 = require("../Quiz/quizzes");
 const dotenv_1 = __importDefault(require("dotenv"));
 const auth_1 = __importDefault(require("./auth"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
-const eventMethods = new event_1.Events();
+const quizMethods = new quizzes_1.Quizzes();
 const index = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = _req.user.user;
-    const result = yield eventMethods.index(username);
+    const result = yield quizMethods.index();
     res.json(result);
 });
-const createEventPage = (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, '../../public', '/new/event.html'));
+const createQuizPage = (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../../public', '/new/quiz.html'));
 };
-const show = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = _req.user.user;
-    try {
-        const eventID = parseInt(_req.params.eventID);
-        const result = yield eventMethods.show(username, eventID);
-        if (result == undefined) {
-            return res.json(`No result for any event by the ID = ${eventID}`);
-        }
-        res.json(result);
-    }
-    catch (err) {
-        res.status(400).json(err);
-    }
-});
 const create = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = _req.user.user;
-    const event = {
-        eventType: _req.body.eventType,
-        eventName: _req.body.eventName,
-        eventDate: _req.body.eventDate,
-        eventURL: _req.body.eventURL
+    const quiz = {
+        name: _req.body.name,
+        description: _req.body.description,
     };
     try {
-        const result = yield eventMethods.create(username, event);
-        res.json({ status: "Successful!", result: result });
+        const result = yield quizMethods.create(username, quiz);
+        if (result === "You have reached the limit of quizzes you can create.") {
+            return res.json({ status: "failed", text: "You have reached the limit of quizzes you can create." });
+        }
+        res.redirect(`/quiz/${result}/new/questions`);
     }
     catch (err) {
         res.status(400).json(err);
     }
 });
-const event_routes = (app) => {
-    app.get("/events", auth_1.default, index);
-    app.get("/event/:eventID", auth_1.default, show);
-    app.get("/new/event", auth_1.default, createEventPage);
-    app.post("/new/event", auth_1.default, create);
+const quiz_routes = (app) => {
+    app.get("/quizzes", auth_1.default, index);
+    app.get("/new/quiz", auth_1.default, createQuizPage);
+    app.post("/new/quiz", auth_1.default, create);
 };
-exports.default = event_routes;
+exports.default = quiz_routes;

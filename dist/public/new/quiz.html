@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create new quiz</title>
+</head>
+<body>
+    <h1>Create new quiz</h1>
+    <a href="/"><button>Home Page</button></a>
+    <form action="/new/quiz" method="POST">
+        <label for="quizName">Quiz Name:</label>
+        <input type="text" id="quizName" name="name" required>
+
+        <label for="quizDescription">Quiz Description:</label>
+        <textarea id="quizDescription" name="description" required></textarea>
+
+        <button type="submit">Create Quiz</button>
+    </form>
+</body>
+</html>

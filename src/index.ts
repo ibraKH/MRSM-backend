@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import bodyParser from 'body-parser';
 import user_routes from './models/handlers/user';
 import event_routes from './models/handlers/event';
+import quiz_routes from "./models/handlers/quizzes";
+import questions_routes from "./models/handlers/questions";
 import cors from "cors";
 import cookies from "cookie-parser";
 
@@ -28,6 +30,8 @@ app.get("/", (req: Request, res: Response) => {
 
 user_routes(app);
 event_routes(app);
+quiz_routes(app);
+questions_routes(app);
 
 // Not Found pages
 app.get('*', (req: Request, res: Response): void => {

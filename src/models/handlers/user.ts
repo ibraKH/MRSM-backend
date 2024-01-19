@@ -1,6 +1,6 @@
 import express, { Request , Response } from "express";
-import { LoginUser, LoginModel } from "../login";
-import { SignupUser, SignupModel } from "../signup";
+import { LoginUser, LoginModel } from "../Users/login";
+import { SignupUser, SignupModel } from "../Users/signup";
 import { check, validationResult } from 'express-validator';
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";

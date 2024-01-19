@@ -1,4 +1,4 @@
-import pool from "../database";
+import pool from "../../database";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 
@@ -48,14 +48,8 @@ export class SignupModel {
 
       await conn.query(sql, [user.username, user.email, hash]);
 
-      const userData: SignupUser = {
-        username: user.username,
-        email: user.email,
-        password: hash,
-      };
-
       conn.release();
-      return userData;
+      return user.username;
     } catch (err) {
       throw new Error(`${err}`);
     }

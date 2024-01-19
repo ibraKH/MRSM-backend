@@ -8,6 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const user_1 = __importDefault(require("./models/handlers/user"));
 const event_1 = __importDefault(require("./models/handlers/event"));
+const quizzes_1 = __importDefault(require("./models/handlers/quizzes"));
+const questions_1 = __importDefault(require("./models/handlers/questions"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
@@ -26,6 +28,8 @@ app.get("/", (req, res) => {
 });
 (0, user_1.default)(app);
 (0, event_1.default)(app);
+(0, quizzes_1.default)(app);
+(0, questions_1.default)(app);
 // Not Found pages
 app.get('*', (req, res) => {
     res

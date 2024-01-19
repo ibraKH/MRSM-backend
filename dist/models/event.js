@@ -18,11 +18,11 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 class Events {
     // Display all events
-    index(userEmail) {
+    index(username) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail]);
+                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username]);
                 if (user_id.rows.length === 0) {
                     return "Something went wrong!";
                 }
@@ -41,11 +41,11 @@ class Events {
         });
     }
     // Display specific event
-    show(userEmail, eventID) {
+    show(username, eventID) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail]);
+                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username]);
                 if (user_id.rows.length === 0) {
                     return "Something went wrong!";
                 }
@@ -64,11 +64,11 @@ class Events {
         });
     }
     // Create new event 
-    create(userEmail, event) {
+    create(username, event) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const conn = yield database_1.default.connect();
-                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail]);
+                const user_id = yield conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username]);
                 if (user_id.rows.length === 0) {
                     return "Something went wrong!";
                 }
@@ -85,7 +85,6 @@ class Events {
                 return eventData;
             }
             catch (err) {
-                console.log(err);
                 throw new Error(`${err}`);
             }
         });

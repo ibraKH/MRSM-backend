@@ -1,4 +1,4 @@
-import pool from "../database";
+import pool from "../../database";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 
@@ -12,7 +12,7 @@ export type LoginUser = {
 };
 
 export class LoginModel {
-  async authenticate(user: LoginUser): Promise<LoginUser | string | null> {
+  async authenticate(user: LoginUser): Promise<string | null> {
     try {
       const conn = await pool.connect();
 
@@ -29,14 +29,9 @@ export class LoginModel {
       if (!bcrypt.compareSync(user.password + pepper, hashedPassword)) {        
         return "Please write the correct Email & Password";
       }
-
-      const returnUser : LoginUser = {
-        email: user.email,
-        password: user.password
-      };
-
+            
       conn.release();
-      return returnUser;
+      return result.rows[0].username;
     } catch (err) {
       throw new Error(`${err}`);
     }

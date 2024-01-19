@@ -13,10 +13,10 @@ export type Event = {
 export class Events {
 
     // Display all events
-    async index(userEmail: string): Promise<string> {
+    async index(username: string): Promise<string> {
         try{
             const conn = await pool.connect();
-            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail])
+            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username])
             if (user_id.rows.length === 0) {
                 return "Something went wrong!";
             }
@@ -37,10 +37,10 @@ export class Events {
     }
 
     // Display specific event
-    async show(userEmail: string, eventID: number): Promise<Event[] | string | null>{
+    async show(username: string, eventID: number): Promise<Event[] | string | null>{
         try{
             const conn = await pool.connect();
-            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail])
+            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username])
             if (user_id.rows.length === 0) {
                 return "Something went wrong!";
             }
@@ -61,10 +61,10 @@ export class Events {
     }
 
     // Create new event 
-    async create(userEmail: string, event: Event): Promise<Array<Event> | string>{
+    async create(username: string, event: Event): Promise<Array<Event> | string>{
         try{          
             const conn = await pool.connect();
-            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE email = ($1);", [userEmail])
+            const user_id = await conn.query("SELECT user_id FROM mrsm_users WHERE username = ($1);", [username])
             if (user_id.rows.length === 0) {
                 return "Something went wrong!";
             }
@@ -81,8 +81,6 @@ export class Events {
             conn.release();
             return eventData;
         } catch (err) {
-            console.log(err);
-            
             throw new Error(`${err}`);
         }
     }

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Question</title>
+</head>
+<body>
+  <h1>Create New Question</h1>
+  
+  <form id="newQuestionForm" action="/new/questions" method="POST">
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+    <label for="type">Type:</label>
+    <select id="type" name="type" onchange="updateAnswerInput()" required>
+      <option value="multiple choice" selected>Multiple Choice</option>
+      <option value="short response">Short Response</option>
+      <option value="true/false">True/False</option>
+    </select>
+    <div id="choicesContainer">
+        <input type="text" name="choice[]" placeholder="Choice" value="">
+        <input type="text" name="choice[]" placeholder="Choice" value="">
+    </div>
+    <div id="answerContainer">
+      <label for="answer">Answer:</label>
+      <select id="answerSelect" name="answer">
+        <option value="A">A</option>
+        <option value="B">B</option>
+      </select>
+      <input type="text" id="answerText" name="answer" style="display: none;">
+    </div>
+    <button type="button" onclick="addChoice()" id="addChoiceBtn">Add Choice</button>
+    <button type="submit">Create Question</button>
+  </form>
+
+  
+<script>
+    const currentUrl = window.location.href;
+    const quizID = currentUrl.split("/quiz")[1].split("/")[1];
+    const newAction = `/quiz/${quizID}/new/questions`;
+    const formID = document.getElementById('newQuestionForm');
+    formID.setAttribute("action", newAction);
+    
+    let choiceCounter = 2;
+    const choicesContainer = document.getElementById('choicesContainer');
+    function addChoice() {
+      const newChoiceInput = document.createElement('input');
+      newChoiceInput.type = 'text';
+      newChoiceInput.name = `choice[]`;
+      newChoiceInput.placeholder = `Choice`;
+      choicesContainer.appendChild(newChoiceInput);
+      choiceCounter++;
+      if (choiceCounter >= 4) {
+        document.getElementById('addChoiceBtn').disabled = true;
+      }
+      updateAnswerOptions();
+    }
+
+    function updateAnswerInput() {
+      const typeSelect = document.getElementById('type');
+      const answerContainer = document.getElementById('answerContainer');
+      const answerSelect = document.getElementById('answerSelect');
+      const answerText = document.getElementById('answerText');
+      switch (typeSelect.value) {
+        case 'multiple choice':
+          answerSelect.style.display = 'inline';
+          answerText.style.display = 'none';
+          choicesContainer.style.display = "inline";
+          document.getElementById('addChoiceBtn').disabled = false;
+          document.getElementById('addChoiceBtn').style.display = "inline";
+          updateAnswerOptions();
+          break;
+        case 'short response':
+          answerSelect.style.display = 'none';
+          answerText.style.display = 'inline';
+          choicesContainer.style.display = "none";
+          document.getElementById('addChoiceBtn').disabled = true;
+          document.getElementById('addChoiceBtn').style.display = "none";
+          break;
+        case 'true/false':
+          answerSelect.style.display = 'inline';
+          answerText.style.display = 'none';
+          choicesContainer.style.display = "none";
+          document.getElementById('addChoiceBtn').disabled = true;
+          document.getElementById('addChoiceBtn').style.display = "none";
+          while (answerSelect.options.length > 0) {
+            answerSelect.remove(0);
+          }
+          addOption(answerSelect, 'True', 'true');
+          addOption(answerSelect, 'False', 'false');
+          break;
+        default:
+          break;
+      }
+    }
+
+    function addOption(selectElement, text, value) {
+      const option = document.createElement('option');
+      option.text = text;
+      option.value = value;
+      selectElement.add(option);
+    }
+  
+    function updateAnswerOptions() {
+      const answerSelect = document.getElementById('answerSelect');
+      while (answerSelect.options.length > 0) {
+        answerSelect.remove(0);
+      }
+      for (let i = 0; i < choiceCounter; i++) {
+        const optionText = String.fromCharCode('A'.charCodeAt(0) + i);
+        addOption(answerSelect, optionText, optionText.toLowerCase());
+      }
+    }
+  </script>
+</body>
+</html>
